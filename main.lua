@@ -12,6 +12,8 @@ function love.load()
 	Player.speed = 180;
 
 	TempRotation = 0;
+
+	Zombies = {};
 end
 
 function love.update(dt)
@@ -44,8 +46,40 @@ function love.draw()
 		Sprites.player:getWidth() / 2, --off-set width
 		Sprites.player:getHeight() / 2 -- off-set heigth
 	);
+
+	for i, z in ipairs(Zombies) do
+		love.graphics.draw(
+			Sprites.zombie,
+			z.x,
+			z.y,
+			ZombiePlayerAngle(z),
+			nil,
+			nil,
+			Sprites.zombie:getWidth() / 2,
+			Sprites.zombie:getHeight() / 2
+		);
+	end
+end
+
+function love.keypressed( key )
+	if key == 'space' then
+		SpawnZombie();
+	end
 end
 
 function PlayerMouseAngle()
 	return math.atan2( love.mouse.getY() - Player.y, love.mouse.getX() - Player.x );
+end
+
+function ZombiePlayerAngle( enemy )
+	return math.atan2(Player.y - enemy.y, Player.x - enemy.x);
+end
+
+function SpawnZombie()
+	local zombie = {};
+	zombie.x = math.random(0, love.graphics.getWidth());
+	zombie.y = math.random(0, love.graphics.getHeight());
+	zombie.speed = 100;
+
+	table.insert(Zombies, zombie);
 end
